@@ -1,14 +1,15 @@
 #include <pebble.h>
 #include "score.h"
-
+#include "menu.h"
+//#include "roll.c"
 //https://github.com/CACE4/Probability-simulator
-#include <pebble.h>
+//#include <pebble.h>
 
 #define NUM_MENU_SECTIONS 1
 #define NUM_PLAYERS 6
   
 Window *score_window;
-Window *player_list_window;
+static Window *player_list_window;
 TextLayer *player_layer;
 TextLayer *score_layer;
 TextLayer *score_player_layer;
@@ -21,6 +22,10 @@ SimpleMenuItem s_player_menu_items[NUM_PLAYERS];
 int score[6];
 
 int sindex = 0;
+
+void push_list(){
+  window_stack_push(player_list_window, true);
+}
 
 static void redrawScore(void){
   
@@ -171,7 +176,7 @@ void player_list_window_appear(){
   redrawPlayers();
 }
 
-void handle_init(void) {
+void handle_init_player() {
   
   // Put scores at 0, if saving is added remove this.
   resetScores();
@@ -249,11 +254,11 @@ void handle_init(void) {
 
   layer_add_child(window_get_root_layer(player_list_window), simple_menu_layer_get_layer(player_list)); 
   
-  window_stack_push(player_list_window, true);
+  //window_stack_push(player_list_window, true);
   redrawScore();
 }
 
-void handle_deinit(void) {
+void handle_deinit_player() {
   text_layer_destroy(score_layer);
   window_destroy(score_window);
 }
