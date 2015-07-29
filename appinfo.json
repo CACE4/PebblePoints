@@ -1,0 +1,34 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Pebble Technology",
+    "longName": "Simple Menu",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/smolpileocoinsW.png",
+                "name": "score",
+                "type": "png"
+            },
+            {
+                "file": "images/SOMETHING.png",
+                "name": "dice2",
+                "type": "png"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Simple Menu",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "69a53987-379e-4ae7-a3c2-d08e5ffe8511",
+    "versionLabel": "2.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
