@@ -10,6 +10,10 @@ static GBitmap *up_icon;
 static GBitmap *down_icon;
 static ActionBarLayer *action_bar;
 
+void push_roll(){
+  window_stack_push(window, true);
+}
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(text_layer, "Select");
   
@@ -69,8 +73,7 @@ static void window_load(Window *window) {
 static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
 }
-
-static void init(void) {
+void init_roll() {
   window = window_create();
   window_set_click_config_provider(window, click_config_provider);
   window_set_window_handlers(window, (WindowHandlers) {
@@ -81,7 +84,7 @@ static void init(void) {
   window_stack_push(window, animated);
 }
 
-static void deinit(void) {
+void deinit_roll() {
   window_destroy(window);
 }
 
