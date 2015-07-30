@@ -1,16 +1,21 @@
 #include <pebble.h>
 #include "roll.h"
-
+#include "animation.h"
+  
 #define NUM_MENU_SECTIONS 1
 #define NUM_SCORES 6  
   
 static Window *window;
 static Window *history_window;
 static TextLayer *text_layer;
-static GBitmap *up_icon;
-static GBitmap *down_icon;
-static ActionBarLayer *action_bar;
+static TextLayer *text_layer2;
+Layer *dice_layer;
+//static GBitmap *up_icon;
+//static GBitmap *down_icon;
+//static ActionBarLayer *action_bar;
 int roll_history[6];
+
+int sides=6;
 
 SimpleMenuLayer *history_list;
 SimpleMenuSection s_menu_sections[NUM_MENU_SECTIONS];
@@ -56,6 +61,7 @@ void updateHistory(){
 }
   
 void add_to_history(int numbah){
+  showLoading(window);
   //roll_history[6] = roll_history[5];
   roll_history[5] = roll_history[4];
   roll_history[4] = roll_history[3];
@@ -65,12 +71,13 @@ void add_to_history(int numbah){
   roll_history[0] = numbah;
   
   updateHistory();
+  hideLoading(window);
 }
 
 void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(text_layer, "Select");
   
-  int r = rand() % 6;
+  int r = rand() % sides;
   
   static char buffer[7];
   
@@ -83,13 +90,24 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(text_layer, buffer);
 }
 
-void up_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Up");
+static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
+  sides++;
+  static char buffer2[25];
+  snprintf(buffer2, sizeof(buffer2), "# of sides: %d",  sides);
+  text_layer_set_text(text_layer2, buffer2);
 }
 
-void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  text_layer_set_text(text_layer, "Down");
+static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
+    sides--;
+    if(sides <= 0){
+      sides = 1;
+    }
+    static char buffer3[25];
+    snprintf(buffer3, sizeof(buffer3), "# of sides: %d",  sides);
+    text_layer_set_text(text_layer2, buffer3);
+  
 }
+
 
 void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
@@ -97,32 +115,31 @@ void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
 }
 
+void dice_rectangle_draw(struct Layer *layer, GContext *ctx){
+graphics_draw_rect(ctx,(GRect) { .origin = { 48, 62 }, .size = { 50, 50 } });
+
+}
+
 void window_load(Window *window) {
-  up_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_UP_ICON);
-  down_icon = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DOWN_ICON);
-  
   Layer *window_layer = window_get_root_layer(window);
   GRect bounds = layer_get_bounds(window_layer);
 
-  text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 20 } });
-  text_layer_set_text(text_layer, "Press a button");
+  dice_layer=layer_create(bounds);
+  layer_set_update_proc(dice_layer, dice_rectangle_draw);
+  
+  text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 50 } });
+  text_layer_set_text(text_layer, "Roll");
+  text_layer_set_font(text_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
-  layer_add_child(window_layer, text_layer_get_layer(text_layer));
-  
-  // Initialize the action bar:
-  action_bar = action_bar_layer_create();
-  // Associate the action bar with the window:
-  action_bar_layer_add_to_window(action_bar, window);
-  // Set the click config provider:
-  action_bar_layer_set_click_config_provider(action_bar,
-                                             click_config_provider);
-  
-  action_bar_layer_set_background_color(action_bar, GColorBlack);
+    GRect bounds2 = layer_get_bounds(window_layer);
 
-  // Set the icons:
-  // The loading of the icons is omitted for brevity... See gbitmap_create_with_resource()
-  action_bar_layer_set_icon(action_bar, BUTTON_ID_UP, up_icon);
-  action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, down_icon);
+  text_layer2 = text_layer_create((GRect) { .origin = { 0, 0 }, .size = { bounds.size.w, 20 } });
+  text_layer_set_text(text_layer2, "# of sides: 6");
+  text_layer_set_text_alignment(text_layer2, GTextAlignmentCenter);
+  
+  layer_add_child(window_layer, text_layer_get_layer(text_layer));
+  layer_add_child(window_layer, text_layer_get_layer(text_layer2));
+  layer_add_child(window_layer, dice_layer);
 }
 
 void window_unload(Window *window) {

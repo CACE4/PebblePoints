@@ -9,6 +9,11 @@
     "resources": {
         "media": [
             {
+                "file": "images/WELLSEEIFTHISWORKS2.png",
+                "name": "IMAGE_LOADING",
+                "type": "png"
+            },
+            {
                 "file": "images/SOMETHING (2).png",
                 "name": "dice2",
                 "type": "png"

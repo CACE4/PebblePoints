@@ -2,7 +2,7 @@
 #include "roll.h"
 #include "menu.h"
 #include "score.h"
-
+#include "animation.h"
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1

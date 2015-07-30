@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "score.h"
 #include "menu.h"
+#include "animation.h"
 //#include "roll.c"
 //https://github.com/CACE4/Probability-simulator
 //#include <pebble.h>
@@ -123,7 +124,9 @@ static void click_config_provider_score(void *context) {
 }
 
 void player_list_window_appear(){
+  showLoading(player_list_window);
   redrawPlayers();
+  hideLoading(player_list_window);
 }
 
 void player_list_window_load(){
