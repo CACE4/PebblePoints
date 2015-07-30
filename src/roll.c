@@ -6,6 +6,7 @@ static Window *window;
 // alex wasn't here; yet
 static TextLayer *text_layer; // this comment
 static TextLayer *text_layer2;
+Layer *dice_layer;
 static GBitmap *up_icon;
 static GBitmap *down_icon;
 static ActionBarLayer *action_bar;
@@ -48,13 +49,18 @@ static void click_config_provider(void *context) {
   window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
   window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
 }
+void dice_rectangle_draw(struct Layer *layer, GContext *ctx){
+graphics_draw_rect(ctx,(GRect) { .origin = { 30,30 }, .size = { 50,50 } });
 
+}
 static void window_load(Window *window) {
  
   Layer *window_layer = window_get_root_layer(window);
-  graphics_draw_rect(text_layer,  (GRect) { .origin = { 30, 72 }, .size = { 40, 40 } });
   GRect bounds = layer_get_bounds(window_layer);
 
+  dice_layer=layer_create(bounds);
+  layer_set_update_proc(dice_layer, dice_rectangle_draw);
+  
   text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 20 } });
   text_layer_set_text(text_layer, "Press a button");
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
@@ -65,7 +71,7 @@ static void window_load(Window *window) {
   text_layer_set_text_alignment(text_layer2, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
   layer_add_child(window_layer, text_layer_get_layer(text_layer2));
-  
+  layer_add_child(window_layer, dice_layer);
 }
 
 static void window_unload(Window *window) {
