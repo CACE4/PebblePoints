@@ -122,72 +122,29 @@ static void click_config_provider_score(void *context) {
 //  window_single_click_subscribe(BUTTON_ID_BACK, back_click_handler_player);
 }
 
-
-
-/*static void special_select_callback(int index, void *ctx) {
-  // Of course, you can do more complicated things in a menu item select callback
-  // Here, we have a simple toggle
-  s_special_flag = !s_special_flag;
-
-  SimpleMenuItem *menu_item = &s_second_menu_items[index];
-
-  if (s_special_flag) {
-    menu_item->subtitle = "Okay, it's not so special.";
-  } else {
-    menu_item->subtitle = "Well, maybe a little.";
-  }
-
-  if (++s_hit_count > 5) {
-    menu_item->title = "Very Special Item";
-  }
-
-  layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
-}*/
-
-
-/*static void up_click_handler_player(ClickRecognizerRef recognizer, void *context) {
-  score[index]++;
-  redrawScore();
-}
-
-static void down_click_handler_player(ClickRecognizerRef recognizer, void *context) {
-  score[index]--;
-  redrawScore();
-}
-
-static void select_click_handler_player(ClickRecognizerRef recognizer, void *context) {
-  window_stack_push(score_window, true);
-}
-
-static void select_long_click_handler_player(ClickRecognizerRef recognizer, void *context){
-  score[index] = 0;
-  redrawScore();
-}
-
-static void click_config_provider_player(void *context) {
-  // Register the ClickHandlers
-  window_single_click_subscribe(BUTTON_ID_UP, up_click_handler_score);
-  window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler_score);
-  window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler_score);
-  window_long_click_subscribe(BUTTON_ID_SELECT, 0, select_long_click_handler_score, NULL);
-}*/
-
 void player_list_window_appear(){
   redrawPlayers();
 }
 
-void handle_init_player() {
-  
-  // Put scores at 0, if saving is added remove this.
-  resetScores();
-  
-  // Create Font
-  elegant_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ELEGANT_LUX_18));
-  roboto_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_REGULAR_18));
-  
-  // Score Window
-  score_window = window_create();
-  
+void player_list_window_load(){
+  s_menu_sections[0] = (SimpleMenuSection) {
+    .title = "Players",
+    .num_items = NUM_PLAYERS,
+    .items = s_player_menu_items,
+  };
+  Layer *window_layer = window_get_root_layer(player_list_window);
+  GRect bounds = layer_get_frame(window_layer);
+
+  player_list = simple_menu_layer_create(bounds, player_list_window, s_menu_sections, NUM_MENU_SECTIONS, NULL);
+
+  layer_add_child(window_get_root_layer(player_list_window), simple_menu_layer_get_layer(player_list)); 
+}
+
+void player_list_window_unload(){
+  simple_menu_layer_destroy(player_list);
+}
+
+void score_window_load(){
   window_set_click_config_provider(score_window, click_config_provider_score);
   
   
@@ -206,61 +163,44 @@ void handle_init_player() {
   
   layer_add_child(window_get_root_layer(score_window), text_layer_get_layer(score_player_layer)); // Add player name to window
   layer_add_child(window_get_root_layer(score_window), text_layer_get_layer(score_layer)); // Add layer to window
+}
+
+void score_window_unload(){
+  
+}
+
+void handle_init_player() {
+  // Fonts
+  elegant_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ELEGANT_LUX_18));
+  roboto_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_REGULAR_18));
+  
+  // Score Window
+  score_window = window_create();
+  window_set_window_handlers(score_window, (WindowHandlers){
+    .load = score_window_load,
+    .unload = score_window_unload,
+    //.appear = player_list_window_appear,
+  });
+
   
   // Player Window
   player_list_window = window_create();
-  redrawScore();
-  
   window_set_window_handlers(player_list_window, (WindowHandlers){
-    //.load = player_list_window_load,
-    //.unload = player_list_window_unload,
+    .load = player_list_window_load,
+    .unload = player_list_window_unload,
     .appear = player_list_window_appear,
   });
   
- // window_set_click_config_provider(player_list_window, click_config_provider_player);
-  
-  
-  // Player Viewer
+  // Maintanence thingys
+  resetScores();
   redrawPlayers();
- 
-  
-  
-  /*s_player_menu_items[1] = (SimpleMenuItem) {
-    .title = "Player 2",
-    .callback = menu_select_callback,
-    //.icon = s_menu_icon_image,
-  };
-
-  s_player_menu_items[2] = (SimpleMenuItem) {
-    .title = "Player 3",
-    .callback = special_select_callback,
-  };*/
-  
-
-  s_menu_sections[0] = (SimpleMenuSection) {
-    .title = "Players",
-    .num_items = NUM_PLAYERS,
-    .items = s_player_menu_items,
-  };
-  /*s_menu_sections[1] = (SimpleMenuSection) {
-    .title = "Miscellaneious",
-    .num_items = NUM_SECOND_MENU_ITEMS,
-    .items = s_second_menu_items,
-  };*/
-  Layer *window_layer = window_get_root_layer(player_list_window);
-  GRect bounds = layer_get_frame(window_layer);
-
-  player_list = simple_menu_layer_create(bounds, player_list_window, s_menu_sections, NUM_MENU_SECTIONS, NULL);
-
-  layer_add_child(window_get_root_layer(player_list_window), simple_menu_layer_get_layer(player_list)); 
-  
-  //window_stack_push(player_list_window, true);
-  redrawScore();
+  //redrawScore();
 }
 
 void handle_deinit_player() {
   text_layer_destroy(score_layer);
   window_destroy(score_window);
+  window_destroy(player_list_window);
 }
 
 /*int main(void) {
