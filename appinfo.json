@@ -3,11 +3,16 @@
     "capabilities": [
         ""
     ],
-    "companyName": "Pebble Technology",
-    "longName": "Simple Menu",
+    "companyName": "Austin Spark League CACE4",
+    "longName": "PebblePoints",
     "projectType": "native",
     "resources": {
         "media": [
+            {
+                "file": "fonts/Roboto-Regular.ttf",
+                "name": "FONT_ROBOTO_REGULAR_18",
+                "type": "font"
+            },
             {
                 "file": "images/smolpileocoinsW.png",
                 "name": "score",
@@ -17,17 +22,22 @@
                 "file": "images/SOMETHING.png",
                 "name": "dice2",
                 "type": "png"
+            },
+            {
+                "file": "fonts/ElegantLux-Mager.otf",
+                "name": "FONT_ELEGANT_LUX_18",
+                "type": "font"
             }
         ]
     },
     "sdkVersion": "3",
-    "shortName": "Simple Menu",
+    "shortName": "PebblePoints",
     "targetPlatforms": [
         "aplite",
         "basalt"
     ],
-    "uuid": "69a53987-379e-4ae7-a3c2-d08e5ffe8511",
-    "versionLabel": "2.0",
+    "uuid": "2ee402a1-8d9c-4c2d-9edc-de4fca3e8ced",
+    "versionLabel": "1.0",
     "watchapp": {
         "watchface": false
     }

@@ -1,4 +1,8 @@
-#include "pebble.h"
+#include <pebble.h>
+#include "roll.h"
+#include "menu.h"
+#include "score.h"
+
 
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
@@ -15,9 +19,24 @@ static GBitmap *s_menu_score_image;
 static bool s_special_flag = false;
 static int s_hit_count = 0;
 
+//void handle_init_player();
+//void handle_deinit_player();
+//static Window *player_list_window;
+
 static void menu_select_callback(int index, void *ctx) {
-  s_first_menu_items[index].subtitle = "You've hit select here!";
-  layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index: %d", index);
+  push_list();
+  
+  //s_first_menu_items[index].subtitle = "You've hit select here!";
+  //layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
+}
+
+static void menu_select_callback2(int index, void *ctx) {
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index: %d", index);
+  push_roll();
+  
+  //s_first_menu_items[index].subtitle = "You've hit select here!";
+  //layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
 }
 
 static void special_select_callback(int index, void *ctx) {
@@ -57,7 +76,7 @@ static void main_window_load(Window *window) {
   s_second_menu_items[0] = (SimpleMenuItem) {
     .icon=s_menu_icon_image,
     .title = "Dice Simulator",
-    .callback = menu_select_callback,
+    .callback = menu_select_callback2,
   };
 
   s_second_menu_items[1] = (SimpleMenuItem) {
@@ -104,6 +123,10 @@ static void deinit() {
 
 int main(void) {
   init();
+  handle_init_player();
+  init_roll();
   app_event_loop();
+  handle_deinit_player();
+  deinit_roll();
   deinit();
 }
