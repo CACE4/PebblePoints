@@ -24,39 +24,20 @@ static int s_hit_count = 0;
 //static Window *player_list_window;
 
 static void menu_select_callback(int index, void *ctx) {
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index: %d", index);
+
   push_list();
   
-  //s_first_menu_items[index].subtitle = "You've hit select here!";
-  //layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
 }
 
 static void menu_select_callback2(int index, void *ctx) {
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Index: %d", index);
+
   push_roll();
-  
-  //s_first_menu_items[index].subtitle = "You've hit select here!";
-  //layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
+
 }
 
 static void special_select_callback(int index, void *ctx) {
-  // Of course, you can do more complicated things in a menu item select callback
-  // Here, we have a simple toggle
-  s_special_flag = !s_special_flag;
 
-  SimpleMenuItem *menu_item = &s_second_menu_items[index];
-
-  if (s_special_flag) {
-    menu_item->subtitle = "Okay, it's not so special.";
-  } else {
-    menu_item->subtitle = "Well, maybe a little.";
-  }
-
-  if (++s_hit_count > 5) {
-    menu_item->title = "Very Special Item";
-  }
-
-  layer_mark_dirty(simple_menu_layer_get_layer(s_simple_menu_layer));
+  push_history();
 }
 
 static void main_window_load(Window *window) {
